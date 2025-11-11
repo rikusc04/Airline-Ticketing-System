@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Customer Dashboard</title>
+        <link rel="stylesheet" href="{{url_for('static', filename='styles/customer_dashboard.css')}}">
+    </head>
+    <body>
+        <header>
+        <h1>Welcome, {{ customer['first_name'] }}</h1>
+        </header>
+        <h2>View My flights</h2>
+        <table>
+            {% if future_flights %}
+                {%for flight in future_flights%}
+                <tr>
+                    <td>{{ flight['id_number'] }}</td>
+                    <td>{{ flight['airline_name'] }}</td>
+                    <td>{{ flight['flight_number'] }}</td>
+                    <td>{{ flight['depart_date'] }}</td>
+                    <td>{{ flight['depart_time'] }}</td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="4">Currently, you have no future flights.</td>
+                </tr>
+            {% endif %}
+        </table> 
+        <br><br>
+        <h2>Search for flights</h2>
+        <p>{% if found_flight %}</p>
+        <tr>
+            <td>{{ found_flight[0]['flight_number'] }}</td>
+            <td>{{ found_flight[0]['depart_date'] }}</td>
+            <td>{{ found_flight[0]['depart_time'] }}</td>
+            <td>{{ found_flight[0]['depart_airport_code'] }}</td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="4">No flights found.</td>
+        </tr>
+    {% endif %}
+        <form action="/search_flights" method="GET"> 
+            <label for="airline_name">Airlane name:</label>
+            <input type="text" id="airline_name" name="airline_name" required maxlength="20"><br><br>
+
+            <label for="flight_number">Flight number:</label>
+            <input type="text" id="flight_number" name="flight_number" required maxlength="5"><br><br>
+
+            <label for="depart_date">Depart Date:</label>
+            <input type="date" id="depart_date" name="depart_date" required><br><br>
+            
+            <label for="depart_time">Depart Time:</label>
+            <input type="text" id="depart_time" name="depart_time" pattern="(?:[01]\d|2[0-3]):(?:[0-5]\d):(?:[0-5]\d)" placeholder="HH:MM:SS" required><br><br>
+
+            <input type="submit" value="Search Flights">
+        </form> 
+        <br></br>
+
+        <h2>Purchase a Ticket</h2>
+        <form action="/purchase_ticket" method="post">
+            <label for="airline_name">Airlane name:</label>
+            <input type="text" id="airline_name" name="airline_name" required maxlength="20"><br><br>
+
+            <label for="flight_number">Flight number:</label>
+            <input type="text" id="flight_number" name="flight_number" required maxlength="5"><br><br>
+
+            <label for="depart_date">Depart Date:</label>
+            <input type="date" id="depart_date" name="depart_date" required><br><br>
+            
+            <label for="depart_time">Depart Time:</label>
+            <input type="text" id="depart_time" name="depart_time" pattern="(?:[01]\d|2[0-3]):(?:[0-5]\d):(?:[0-5]\d)" placeholder="HH:MM:SS" required><br><br>
+
+            <label for="first_name">First Name:</label>
+            <input type="text" id="first_name" name="first_name" required maxlength="15"><br><br>
+
+            <label for="last_name">Last Name:</label>
+            <input type="text" id="last_name" name="last_name" required maxlength="15"><br><br>
+
+            <label for="date_of_birth">Date of Birth:</label>
+            <input type="date" id="date_of_birth" name="date_of_birth" required maxlength="15"><br><br>
+
+            <label for="name_on_card">Name on Card:</label>
+            <input type="text" id="name_on_card" name="name_on_card" required maxlength="20"><br><br>
+
+            <label for="card_type">Card Type:</label>
+            <input type="text" id="card_type" name="card_type" required maxlength="30"><br><br>
+        
+            <label for="card_number">Card Number:</label>
+            <input type="text" id="card_number" name="card_number" required maxlength="30"><br><br>
+        
+            <label for="expiration_date">Expiration Date:</label>
+            <input type="date" id="expiration_date" name="expiration_date" required><br><br>
+        
+            <input type="submit" value="Purchase Ticket">
+        </form> 
+    
+        <h2>Cancel a Trip</h2>
+        <form action="/cancel_ticket" method="POST"> 
+            <label for="ticket_id">Enter Ticket ID to Cancel: </label>
+            <input type="text" id="ticket_id" name="ticket_id" required><br><br>
+
+            <input type ="submit" value="Cancel the flight">
+        <br><br>
+        </form>
+
+        <h2>Track My Spending:</h2>
+        <!-- Total spending in the past year -->
+        <p>Total amount spent in the past year: $<span>{{ spendings_past_year }}</span></p>
+        <!-- Spending within a specified range -->
+        <form action="/spending_range" method="GET">
+            <label for="start_date">Start Date:</label>
+            <input type="date" id="start_date" name="start_date">
+            <label for="end_date">End Date:</label>
+            <input type="date" id="end_date" name="end_date">
+            <input type="submit" value="View Spending">
+        </form>
+        <p>{% if range_spending %}</p>
+        <tr>
+            <p>From <td>{{start_date}}</td> to <td>{{end_date}}</td>, your total spending was $<td>{{range_spending}}</td> </p>
+            <p> Month 1: 0 </p>
+            <p> Month 2: 0 </p>
+            <p> Month 3: 2820.2 </p>
+            <p> Month 4: 0 </p>
+            <p> Month 5: 0 </p>
+            <p> Month 6: 0 </p>
+        </tr>
+        <p>
+        {% endif %}
+        </p>
+        
+        <!-- Visualization for spending within the specified range (e.g., bar chart or table) -->
+        
+        <!-- JavaScript to fetch and update spending data -->
+<p><a href="rating.html" class="button-link">Before you leave, please give us a rate!</a></p>
+s
+    <form action="/customer_logout" method="GET">
+        <input type="submit" value="Logout">
+    </form>
+    <footer>
+        <p>&copy; 2024 New Flight. All rights reserved.</p>
+    </footer>
+    </body>
+
+</html>

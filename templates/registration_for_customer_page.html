@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Flight Search and Status</title>
+        <link rel="stylesheet" href="{{url_for('static', filename='styles/customer_register_page.css')}}">
+    </head>
+    <body>
+        <header>
+        <h1> Customer Registration</h1>
+        </header>
+        <section>            
+            <form action="/registration_for_customer_page.html" method="POST">
+                <label for= "email_address"> Email Address: </label>
+                <input type="email" id="email_address" name="email_address" required maxlength="30"> <br><br>
+                
+                <label for= "first_name"> First Name: </label>
+                <input type="text" id= "first_name" name="first_name" required maxlength="15"> <br><br>
+
+                <label for= "last_name"> Last Name: </label>
+                <input type="text" id="last_name" name="last_name" required maxlength="15"> <br><br>
+
+                <label for= "password"> Password: </label>
+                <input type="password" id="password" name="password" required maxlength="300"> 
+                
+                <div class="address-section">
+                    <h3>Address</h3>
+                    <label for="building_number">Building Number</label>
+                    <input type="number" id="building_number" name="building_number" required>
+                
+                    <label for="street">Street</label>
+                    <input type="text" id="street" name="street" required maxlength="20">
+                    
+                    <label for="apt_number">Apartment Number</label>
+                    <input type="number" id="apt_number" name="apt_number" required>
+                    
+                    <label for="city">City</label>
+                    <input type="text" id="city" name="city" required maxlength="20">
+                    
+                    <label for="state">State</label>
+                    <input type="text" id="state" name="state" required maxlength="20">
+                    
+                    <label for="zipcode">Zip Code</label>
+                    <input type="number" id="zipcode" name="zipcode" required maxlength="5"><br><br>
+                </div>
+
+                <label for="phone_number">Phone Number:</label>
+                <input type="text" id="phone_number" name="phone_number" maxlength="12"> <br><br>
+
+                <label for="passport_number"> Passport Number: </label>
+                <input type="text" id="passport_number" name="passport_number" required maxlength="10"><br><br>
+
+                <label for="passport_expiration"> Passport Expiration: </label>
+                <input type="date" id="passport_expiration" name="passport_expiration" required><br><br>
+
+                <label for="passport_country"> Passport Country: </label>
+                <input type="text" id="passport_country" name="passport_country" required maxlength="20"><br><br>
+
+                <label for="date_of_birth"> Date of birth: </label>
+                <input type="date" id="date_of_birth" name="date_of_birth" required><br><br>
+
+                <input type="submit" value="Register as Customer">
+
+            </form>
+        </section>
+        <button onclick="goBack()">Back</button>
+        <script>
+            function goBack() {
+                window.history.back();
+            }
+        </script>
+    </body>
+    <footer>
+        <p>&copy; 2024 New Flight. All rights reserved.</p>
+    </footer>
+</html>

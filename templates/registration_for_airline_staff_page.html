@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Flight Search and Status</title>
+        <link rel="stylesheet" href="{{url_for('static', filename='styles/registration_for_airline_staff.css')}}">
+    </head>
+    <body>
+        <header>
+            <h1>Airline Staff Registration</h1>
+        </header>
+        <section>
+            <form action="registration_for_airline_staff_page.html" method="post">
+                <label for= "airline_name"> Airline Name: </label>
+                <input type="text" id="airline_name" name="airline_name" required maxlength="20" > <br><br>
+
+                <label for= "username"> Username: </label>
+                <input type="text" id="username" name="username" required maxlength="20" > <br><br>
+                
+                <label for= "password">Password: </label>
+                <input type="password" id="password" name="password" required maxlength="300"> <br><br>
+
+                <label for= "first_name"> First Name: </label>
+                <input type="text" id="first_name" name="first_name" required maxlength="15"> <br><br>
+                
+                <label for= "last_name"> Last Name: </label>
+                <input type="text" id="last_name" name="last_name" required maxlength="15"> <br><br>
+                
+                <label for= "date_of_birth"> Date of birth: </label>
+                <input type="date" id="date_of_birth" name="date_of_birth" required> <br><br>
+                
+                <label for= "phone_number"> Phone Number: </label>
+                <input type="tel" id="phone_number" name="phone_number" maxlength="12"> <br><br>
+                
+                <label for= "email_address"> Email Address: </label>
+                <input type="email" id="email_address" name="email_address" maxlength="30"> <br><br>
+                
+                <input type="submit" value="Register as a Staff">
+
+            </form>
+        </section>
+        <button onclick="goBack()">Back</button>
+        <script>
+            function goBack() {
+                window.history.back();
+            }
+        </script>
+    </body>
+    <footer>
+        <p>&copy; 2024 New Flight. All rights reserved.</p>
+    </footer>
+</html>

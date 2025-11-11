@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title> Airline Staff Login Page </title>
+        
+        <style>
+            /* Styling for the login form */
+            .login-form
+            {
+                width: 300px; /* controls the width of the box containing the "username" and "password" fields */
+                margin: 0 auto; /* controls where the form is located on the page (0 is center) */
+                padding: 20px; /* controls the length from which the content ("username" and "password" fields) is on the form to the edge of the form */
+                background-color: lightgray; /* controls the background color of the form */
+                border: 2px solid gray; /* Adds a 2-pixel solid gray border around the login form container */
+                border-radius: 5px; /* Rounds off the corners of the login form border by 5 pixels */
+            }
+
+            .form-group
+            {
+                margin-bottom: 15px; /* controls the space in between each line in a form */
+            }
+
+            .form-group label
+            {
+                display: block;
+                margin-bottom: 5px;
+            }
+
+            .form-group input[type="text"], .form-group input[type="password"] /* create a designated area to enter in the information */
+            {
+                width: calc(100% - 12px); /* Sets the width of the input fields to 100% - 12 pixels. Allows for some space for padding and borders */
+                padding: 6px; /* controls the length from the information within the username and password boxes to the edge of the boxes */
+                border: 1px solid gray; /* Adds a 1 pixel solid gray border around the boxes desgnated to input information */
+                border-radius: 3px; /* Rounds off the corners of the login form border by 3 pixels */
+            }
+
+            .form-group input[type="submit"] /* Class for the submit buttons within the form*/
+            {
+                width: 100%; /* Sets the width of submit buttons to 100% to fill the width of the parent container */
+                padding: 8px; /* controls the length from the submit/login text to the edge of the boxes */
+                background-color: green; /* controls the color of the submit/login box (within the form) */
+                color: white; /* controls the color of the text (the text "login" will be in white) */
+                border: none; /* no borders */
+                border-radius: 3px; /* rounds the corners of the submit buttons by 3 pixels */
+                cursor: pointer; /* changes the mouse to a pointer when hovering over the submit buttons */
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="login-form"> <!-- creates a wrapper of type login-form/a kind of container for the information -->
+            <h2> Airline Staff Login </h2> <!-- specifies a second-level heading in a document (Note that headings range from h1 to h6, with h1 being the most important) -->
+                <form action="/airline_staff_login_page.html" method="POST"> <!-- This <form> element defines the login form. It specifies the action attribute as "login_process.php", indicating 
+                                                                the server-side script that will handle the form submission. The method attribute is set to "POST", indicating that 
+                                                                form data will be sent to the server using the HTTP POST method. -->
+
+                    <div class="form-group">
+                        <label for="username">Username:</label> <!-- creates a box designated for the Username field, (indicated by the "for") with the text "Username" displayed for users to see -->
+                        <input type="text" id="username" name="username" required> <!-- type spcifies that the user can input any text, id field assigns a unique identifier to the input field. The id attribute is 
+                                                                                    used to associate the input field with labels and to manipulate the input field. The name field is there so
+                                                                                    when the form is submitted, it will be sent to the server with "username". This name is used to identify the input field in 
+                                                                                    the form data submitted to the server. -->
+
+                    </div>
+                    <!-- the following is the same as username, but this time, it's just for password. But no difference in mechanics -->
+                    <div class="form-group"> 
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+
+                    <div class="form-group"> <!-- servers as a container for the submit button -->
+                        <input type="submit" value="Login"> <!-- the type ="submit" attribute indicates that this button will submit the form when clicked. The value="Login" attribute specifies the text displayed on the button, which in this case is "Login" -->
+                    </div>
+
+                </form>
+            <button onclick="goBack()">Back</button>
+        </div>
+        <script>
+            function goBack() {
+                window.history.back();
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>rating</title>
+        <link rel="stylesheet" href="{{url_for('static', filename='styles/rating.css')}}">
+    </head>
+<body>
+<header>
+<h2>Rate our flights</h2>
+</header>
+<section>
+    <form action="/submit_rating" method="POST"> 
+        <label for="airline_name">Airline name:</label>
+        <input type="text" id="airline_name" name="airline_name" required maxlength="20"><br><br>
+        
+        <label for="flight_number">Flight number:</label>
+        <input type="text" id="flight_number" name="flight_number" required maxlength="5"><br><br>
+
+        <label for="depart_date">Depart Date:</label>
+        <input type="date" id="depart_date" name="depart_date" required><br><br>
+        
+        <label for="depart_time">Depart Time:</label>
+        <input type="text" id="depart_time" name="depart_time" pattern="(?:[01]\d|2[0-3]):(?:[0-5]\d):(?:[0-5]\d)" placeholder="HH:MM:SS" required><br><br>
+
+        <label for="rating">Rating (1 to 10):</label>
+        <input type="range" id="rating" name="rating" min="1" max="10" required oninput="this.nextElementSibling.value = this.value">
+        <output>5</output><br><br>
+        
+        <label for="comments"></label>
+        <textarea id="comments" name="comments" rows="4" cols="50" required placeholder="Enter your comments here..."></textarea><br><br>
+        <input type="submit" value="Rate the flight">
+        </form>
+    </section>
+</body>
+    <footer>
+        <p>&copy; 2024 New Flight. All rights reserved.</p>
+    </footer>
+    </html>
