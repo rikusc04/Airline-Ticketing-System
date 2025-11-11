@@ -1,0 +1,109 @@
+body,html {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f0f0;
+    color: #333;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Use viewport height to ensure full screen height */
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+.content {
+    flex: 1; /* Flex-grow, makes the content expand to fill available space */
+}
+header {
+    background-color: #50C878;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+}
+nav a {
+    margin: 0 10px; /* Adjust the 10px to increase or decrease spacing */
+    color: white;
+    text-decoration: none;
+}
+h1 {
+    color: white;
+    text-align: center;
+}
+form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    max-width: 600px;
+    margin: 20px auto;
+}
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+input[type="text"],
+input[type="email"],select{
+    width: calc(50% - 10px);
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: inline-block;
+}
+input[type="password"],
+input[type="number"],
+input[type="date"],
+input[type="tel"] {
+    width: 90%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+input[type="text"]:focus, input[type="email"]:focus, select:focus {
+    border-color: #4CAF50;
+    outline: none;
+}
+
+input[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+}
+input[type="submit"]:hover {
+    background-color: #45a049;
+}
+footer {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    height: 60px; /* Adjust height as needed */
+    background-color: #50C878; /* Your footer background color */
+    color: white; /* Text color */
+    font-size: 16px; /* Adjust font size as needed */
+    width: 100%; /* Ensure it spans the full width */
+}
+
+footer a {
+    color: white;
+    text-decoration: none;
+    text-align: center;
+    margin: 0 10px; 
+}
+button {
+    color: black;             /* White text */
+    border: none;             /* No borders */
+    padding: 15px 32px;       /* Padding inside the button */
+    text-align: center;       /* Center-aligned text */
+    text-decoration: none;    /* No underline */
+    display: inline-block;    /* Display type */
+    font-size: 16px;          /* Text size */
+    margin: 4px 2px;          /* Margin around the button */
+    cursor: pointer;          /* Cursor appears as a pointer */
+    border-radius: 8px;       /* Rounded corners */
+    transition: 0.3s;         /* Smooth transition for hover effect */
+}
