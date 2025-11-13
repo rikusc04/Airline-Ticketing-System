@@ -307,7 +307,7 @@ def pay_for_ticket():
             curs.execute(query4, (airplane_id, airline_name))
             num_of_total_seats = curs.fetchall()[0]['num_of_seat']
             
-            if (num_of_taken_seats / num_of_total_seats) >= 0.8 & (num_of_taken_seats / num_of_total_seats) < 1:
+            if (num_of_taken_seats / num_of_total_seats) >= 0.8 and (num_of_taken_seats / num_of_total_seats) < 1:
                 price = price *.75
             elif (num_of_taken_seats / num_of_total_seats) == 1:
                 curs.close()
