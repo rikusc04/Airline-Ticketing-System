@@ -490,7 +490,7 @@ def create_flight():
         output = curs.fetchall()
         airline_name = output[0]["airline_name"]
                 
-        if (not (check_if_flight_exists(airline_name, flight_number, depart_date, depart_time))) & in_future:
+        if (not (check_if_flight_exists(airline_name, flight_number, depart_date, depart_time))) and in_future:
             curs.execute(query1, (airline_name, flight_number, depart_date, depart_time, departing_airport_code, arrival_date, arrival_time, destination_airport_code, base_price, status, airplane_id_number))
             db.commit()
             curs.close()
