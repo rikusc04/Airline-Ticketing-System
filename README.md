@@ -1,4 +1,4 @@
-# Airline_Ticketing_System
+# Airline-Ticketing-System
 This repository mimics is a CRUD application that allows for the booking, cancelling, and enrolling of new customers/airline staff. This project was broken up into mainly three parts: Client-side, Server-side, and Database
 
 1) Client-Side (Frontend):
