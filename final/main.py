@@ -1,5 +1,5 @@
-#Riku Santa Cruz
-#Airline Website
+# Riku Santa Cruz
+# Airline Website
 
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
 # import pymysql.cursors
@@ -36,13 +36,6 @@ db = pymysql.connect(host="localhost",
                    cursorclass=pymysql.cursors.DictCursor
 )
 
-# cursor = db.cursor()
-# @app.before_first_request
-# def init_db():
-#     db.ping(reconnect=True)
-
-
-
 # Function to check whether the customer exists in the databse, used when logging in
 def authenticate_customer(email_address_in, password_in):
     cursor = db.cursor()
@@ -50,7 +43,7 @@ def authenticate_customer(email_address_in, password_in):
     try:
         cursor.execute(query, email_address_in)
         output = cursor.fetchall() # use .fetchone() becauause the query should only return one row, and not multipe rows
-        # Note; type(output) is a list of length (only supports index 0). In this index is a dictionary of the row retrieved) output[0] to access dictionary,
+        # Note: type(output) is a list of length (only supports index 0). In this index is a dictionary of the row retrieved) output[0] to access dictionary,
         # output[0]["key_name"] to access the value in that key
         cursor.close()
         if output[0]["email_address"] == email_address_in and output[0]["password"] == password_in: # If the password_in matches the one retrieved # and output[0]["email_address"] == email_address_in: # if the email and password matches
@@ -67,35 +60,29 @@ def authenticate_customer(email_address_in, password_in):
         flash("Incorrect Password")
         return False # return False
 
-
 # fucntion to check whether the airline staff exists in the databse, used when logging in
 def authenticate_airline_staff(username_in, password_in):
     cursor = db.cursor()
     query = "SELECT * FROM Airline_Staff WHERE username = %s"
-    
     try:
         cursor.execute(query, username_in)
         output = cursor.fetchall() # use .fetchone() becauause the query should only return one row, and not multipe rows
         cursor.close()
-
         if output[0]["password"] == password_in: # if the password matches
             return True # return true
-        if output[0]["username"] == username_in:# if only the username_in matches the one retrieved, account exists but wrong password
+        if output[0]["username"] == username_in: # if only the username_in matches the one retrieved, account exists but wrong password
             flash("Incorrect Username") # displays a temporary message for the user to see
             return False
         return False
-    
     except Exception:
         flash("Incorrect Username")
         flash("Incorrect Password")
         return False
 
-
 # function to check whether the airline staff already exists in the databse, used when registering
 def airline_staff_exists(username_in):
     cursor = db.cursor()
     query = "SELECT * FROM Airline_Staff WHERE username = %s"
-    
     try:
         cursor.execute(query, username_in)
         output = cursor.fetchall() # this query should only be returning one row becuase usernames are unique
@@ -106,25 +93,21 @@ def airline_staff_exists(username_in):
     except Exception:
         return False # erorr occured, couldn't check staff exists
 
-
 # function to check whether the customer already exists in the databse, used when registering
 def customer_exists(email_addess):
     cursor = db.cursor()
     query = "SELECT * FROM Customer WHERE email_address = %s"
-    
     try:
         cursor.execute(query, (email_addess,)) # ust be email_address, because you have to pass in a tuple, not a single variable
         output = cursor.fetchall() # this query should only be returning one row becuase email_address are unique
         if output[0]["email_address"] == email_addess: # if the retrieved output matches the username passed in 
             return True # return true becuase the username exists
         return False # if the usernames do not match, aka if it returns an empty set, the username doesn't exist
-    
     except Exception:
-        return False# erorr occured, couldn't check customer exists
+        return False # erorr occured, couldn't check customer exists
 
 @app.route('/')
 def index_page():
-    # fetch()
     return render_template('index.html')
 
 @app.route('/customer_login_page.html', methods = ['GET', 'POST']) # route to the customer's login page (Where they enter email and password)
@@ -143,18 +126,14 @@ def customer_login_page():
     # Redirect back to the login page with an error message
     return render_template('customer_login_page.html', error=True)
 
-
-
 @app.route('/customer_dashboard.html', methods = ['GET', 'POST'])
 def customer():
     try:
-
         email_address = session['email']
         cursor = db.cursor()
         query = "SELECT * FROM Customer where email_address = %s"
         cursor.execute(query, email_address)
         user_data = cursor.fetchall() # retrieves the data of the customer logged in
-        
         query = """
         SELECT sum(Ticket.sold_price) 
         FROM Customer, Purchase, Ticket 
@@ -164,7 +143,6 @@ def customer():
         # DATE_SUB(CURRENT_DATE(), INTERVAL 1 YEAR)
         cursor.execute(query, email_address)
         user_spending = cursor.fetchall()[0]['sum(Ticket.sold_price)']
-        
         query = """
         SELECT ticket.id_number, ticket.airline_name, ticket.flight_number, ticket.depart_date, ticket.depart_time 
         FROM purchase, ticket 
@@ -172,14 +150,11 @@ def customer():
         """
         cursor.execute(query, email_address)
         future_flights = cursor.fetchall()
-
         # return render_template('customer_dashboard.html')
         return render_template('customer_dashboard.html', customer = user_data[0], spendings_past_year = user_spending,future_flights=future_flights)
-
     except Exception:
         message = 'Please Login or Create an Account'
         return render_template('customer_login_page.html', error=message)
-
 
 @app.route('/search_flights', methods = ['GET'])
 def search_flights():
@@ -189,13 +164,12 @@ def search_flights():
         flight_number = request.args.get('flight_number')
         depart_date = request.args.get('depart_date')
         depart_time = request.args.get('depart_time')
-        
+
         cursor = db.cursor()
-        query = "SELECT * FROM flight WHERE airline_name = %s AND flight_number = %s AND depart_date = %s AND depart_time = %s"
         
+        query = "SELECT * FROM flight WHERE airline_name = %s AND flight_number = %s AND depart_date = %s AND depart_time = %s"
         cursor.execute(query, (airline_name, flight_number, depart_date, depart_time))
         found_flight = cursor.fetchall()
-        
         query = "SELECT * FROM Customer where email_address = %s"
         cursor.execute(query, email_address)
         user_data = cursor.fetchall() # retrieves the data of the customer logged in
@@ -220,56 +194,48 @@ def search_flights():
         
         return render_template('customer_dashboard.html', customer = user_data[0], spendings_past_year = user_spending[0],future_flights=future_flights, found_flight=found_flight)
 
-
 @app.route('/spending_range', methods=['GET'])
 def spending_range():
-    # try:
-        email_address = session['email']
-        cursor = db.cursor()
-        
-        # fetch user data:
-        query = "SELECT * FROM Customer where Customer.email_address = %s"
-        cursor.execute(query, email_address)
-        user_data = cursor.fetchall() # extracts user data
-        
-        query = """
-        SELECT sum(Ticket.sold_price) 
-        FROM Customer, Purchase, Ticket 
-        WHERE Customer.email_address = %s and Customer.email_address = Purchase.email_address and Purchase.id_number = Ticket.id_number 
-        and Purchase.purchase_date >= YEAR(DATE_SUB(CURDATE(), INTERVAL 1 YEAR))
-        """
-        # DATE_SUB(CURRENT_DATE(), INTERVAL 1 YEAR)
-        cursor.execute(query, email_address)
-        user_spending = cursor.fetchall()[0]['sum(Ticket.sold_price)']
-        
-        # fetch spending within a range
-        start_date = request.args.get('start_date')
-        end_date = request.args.get('end_date')
-        query = """
-        SELECT sum(Ticket.sold_price)
-        FROM Customer, Purchase, Ticket 
-        WHERE Customer.email_address = %s and Customer.email_address = Purchase.email_address and Purchase.id_number = Ticket.id_number 
-        and Purchase.purchase_date >= %s and Purchase.purchase_date <= %s
-        """
-        cursor.execute(query, (email_address, start_date, end_date))
-        range_spending = cursor.fetchall()[0]['sum(Ticket.sold_price)']
-  
-        query = """
-        SELECT ticket.id_number, ticket.airline_name, ticket.flight_number, ticket.depart_date, ticket.depart_time 
-        FROM purchase, ticket 
-        WHERE purchase.email_address = %s and purchase.id_number = ticket.id_number;
-        """
-        cursor.execute(query, email_address)
-        future_flights = cursor.fetchall()
-        cursor.close()
-        
-        return render_template('customer_dashboard.html', customer = user_data[0], start_date=start_date, end_date=end_date, spending_past_year = user_spending, range_spending = range_spending, future_flights=future_flights)
+    email_address = session['email']
+    cursor = db.cursor()
     
-    # except Exception as e:
-    #     # Handle exceptions
-    #     return "Error: Unable to fetch spending data within the specified range"
+    # fetch user data:
+    query = "SELECT * FROM Customer where Customer.email_address = %s"
+    cursor.execute(query, email_address)
+    user_data = cursor.fetchall() # extracts user data
     
+    query = """
+    SELECT sum(Ticket.sold_price) 
+    FROM Customer, Purchase, Ticket 
+    WHERE Customer.email_address = %s and Customer.email_address = Purchase.email_address and Purchase.id_number = Ticket.id_number 
+    and Purchase.purchase_date >= YEAR(DATE_SUB(CURDATE(), INTERVAL 1 YEAR))
+    """
+    # DATE_SUB(CURRENT_DATE(), INTERVAL 1 YEAR)
+    cursor.execute(query, email_address)
+    user_spending = cursor.fetchall()[0]['sum(Ticket.sold_price)']
     
+    # fetch spending within a range
+    start_date = request.args.get('start_date')
+    end_date = request.args.get('end_date')
+    query = """
+    SELECT sum(Ticket.sold_price)
+    FROM Customer, Purchase, Ticket 
+    WHERE Customer.email_address = %s and Customer.email_address = Purchase.email_address and Purchase.id_number = Ticket.id_number 
+    and Purchase.purchase_date >= %s and Purchase.purchase_date <= %s
+    """
+    cursor.execute(query, (email_address, start_date, end_date))
+    range_spending = cursor.fetchall()[0]['sum(Ticket.sold_price)']
+
+    query = """
+    SELECT ticket.id_number, ticket.airline_name, ticket.flight_number, ticket.depart_date, ticket.depart_time 
+    FROM purchase, ticket 
+    WHERE purchase.email_address = %s and purchase.id_number = ticket.id_number;
+    """
+    cursor.execute(query, email_address)
+    future_flights = cursor.fetchall()
+    cursor.close()
+    
+    return render_template('customer_dashboard.html', customer = user_data[0], start_date=start_date, end_date=end_date, spending_past_year = user_spending, range_spending = range_spending, future_flights=future_flights)
     
 @app.route('/purchase_ticket', methods = ["POST"])   
 def pay_for_ticket():
@@ -366,7 +332,6 @@ def cancel_trip():
     else:
         return redirect(url_for('customer'))
 
-
 @app.route('/airline_staff_login_page.html', methods = ['GET', 'POST']) # route to the arline staff's login page (Where they enter email and password)
 def airline_staff_login_page():
     if request.method == "POST":
@@ -407,7 +372,6 @@ def airline_staff():
         # a list of dictionaries; each dictionary holds information about the flight where the ailine matches what the staff works for
         # and, each dictionary contains a future flight
         output2 = cursor.fetchall() # gets all future flights in which the airline staff works for
-    
         
         query = """
         SELECT Reviews.airline_name, Reviews.flight_number, Reviews.depart_date, Reviews.depart_time, Reviews.rating, Reviews.comment 
@@ -415,7 +379,6 @@ def airline_staff():
         WHERE Reviews.airline_name = %s and Reviews.flight_number = Flight.flight_number and Reviews.depart_date = Flight.depart_date and 
         Reviews.depart_time = Flight.depart_time;
         """
-        
         cursor.execute(query, airline_name)
         reviews = cursor.fetchall() # a list of dictionaries
         
@@ -447,7 +410,6 @@ def airline_staff():
     
     except:
         message = 'Please Login or Create an Account'
-        # return render_template('airline_staff_dashboard.html', user_data = user_data[0], airline_name = airline_name, future_flights = output2)
         return render_template('airline_staff_login_page.html', error=message)
 
 def check_if_flight_exists(airline, flight_num, depart_date, depart_time):
@@ -554,7 +516,6 @@ def add_airport():
         number_of_terminals = request.form.get('number_of_terminals')
         type = request.form.get('type')
         
-        
         curs = db.cursor()
         query1 = "INSERT INTO airport VALUES (%s, %s, %s, %s, %s, %s)"
         
@@ -584,8 +545,6 @@ def check_airplane_exists(airline_name, id):
     except:
         return False
 
-#missing maintenance id in airplane sql
-#missing airline name in airline staff dashboard html
 @app.route('/add_airplane', methods = ['POST'])
 def add_airplane():
     if (request.method == "POST"):
@@ -619,7 +578,6 @@ def add_airplane():
 def maintenance_exists(id):
     curs = db.cursor()
     query = "SELECT * FROM Maintenance WHERE id = %s"
-    
     try:
         output = curs.execute(query, (id))
         if (output[0] == id):
@@ -642,8 +600,8 @@ def schedule_maintenance():
         curs = db.cursor()
         query1 = "INSERT INTO Maintenance VALUES (%s, %s, %s, %s, %s)"
         query2 = "UPDATE Airplane SET maintenance_id = %s WHERE airline_name = %s AND id_number = %s"
-        
         query3 = " SELECT * FROM Employed_By where username = %s"
+        
         curs.execute(query3, session.get('username'))
         output = curs.fetchall()
         airline_name = output[0]["airline_name"]
@@ -669,9 +627,7 @@ def ratings():
                 return render_template('rating.html')
         except:
             return render_template('customer_dashboard.html')
-
     return render_template('customer_dashboard.html')
-
 
 @app.route('/submit_rating', methods=['POST'])
 def submit_ratings():
@@ -693,7 +649,6 @@ def submit_ratings():
         WHERE airline_name = %s and flight_number = %s and depart_date = %s and depart_time = %s and depart_date < CURRENT_DATE() and  depart_date < CURRENT_TIME()
         """
         cursor.execute(query, (airline_name, flight_number, depart_date, depart_time))
-
         output = cursor.fetchall()
         
         if not output: # query returned nothing, meaning flight doesnt exist
@@ -798,4 +753,3 @@ def airline_staff_logout():
         
 if __name__ == '__main__':
     app.run('127.0.0.1', 5000, debug = True)
-    
