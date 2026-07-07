@@ -16,6 +16,7 @@ from flask import (
     session,
     url_for,
 )
+from flask.typing import ResponseReturnValue
 from sqlalchemy import text
 
 from ..extensions import db
@@ -93,7 +94,7 @@ def _get_spending(
 
 @bp.get("/dashboard")
 @customer_required
-def dashboard() -> object:
+def dashboard() -> ResponseReturnValue:
     email = session["email"]
     customer_row = _get_customer_row(email)
     if not customer_row:
@@ -111,7 +112,7 @@ def dashboard() -> object:
 
 @bp.get("/search_flights")
 @customer_required
-def search_flights() -> object:
+def search_flights() -> ResponseReturnValue:
     email = session["email"]
     customer_row = _get_customer_row(email)
     if not customer_row:
@@ -154,7 +155,7 @@ def search_flights() -> object:
 
 @bp.get("/spending_range")
 @customer_required
-def spending_range() -> object:
+def spending_range() -> ResponseReturnValue:
     email = session["email"]
     customer_row = _get_customer_row(email)
     if not customer_row:
@@ -186,7 +187,7 @@ def spending_range() -> object:
 
 @bp.post("/purchase_ticket")
 @customer_required
-def purchase_ticket() -> object:
+def purchase_ticket() -> ResponseReturnValue:
     email = session["email"]
     form = request.form
 
@@ -318,7 +319,7 @@ def purchase_ticket() -> object:
 
 @bp.post("/cancel_ticket")
 @customer_required
-def cancel_ticket() -> object:
+def cancel_ticket() -> ResponseReturnValue:
     email = session["email"]
     ticket_id = (request.form.get("ticket_id") or "").strip()
     if not ticket_id:
@@ -374,13 +375,13 @@ def cancel_ticket() -> object:
 
 @bp.get("/rating")
 @customer_required
-def rating() -> object:
+def rating() -> ResponseReturnValue:
     return render_template("rating.html")
 
 
 @bp.post("/submit_rating")
 @customer_required
-def submit_rating() -> object:
+def submit_rating() -> ResponseReturnValue:
     email = session["email"]
     form = request.form
     airline_name = form.get("airline_name")
@@ -395,7 +396,7 @@ def submit_rating() -> object:
         return redirect(url_for("customer.dashboard"))
 
     try:
-        rating_num = Decimal(rating_val)
+        rating_num = Decimal(rating_val or "0")
     except (TypeError, ValueError):
         flash("Invalid rating.")
         return redirect(url_for("customer.dashboard"))

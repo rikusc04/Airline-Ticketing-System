@@ -13,6 +13,7 @@ from flask import (
     session,
     url_for,
 )
+from flask.typing import ResponseReturnValue
 from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
 
@@ -33,7 +34,7 @@ bp = Blueprint("auth", __name__)
 
 
 @bp.route("/customer/login", methods=["GET", "POST"])
-def customer_login() -> object:
+def customer_login() -> ResponseReturnValue:
     if request.method == "POST":
         email = (request.form.get("email_address") or "").strip().lower()
         password = request.form.get("password") or ""
@@ -61,7 +62,7 @@ def customer_login() -> object:
 
 
 @bp.route("/customer/register", methods=["GET", "POST"])
-def customer_register() -> object:
+def customer_register() -> ResponseReturnValue:
     if request.method == "POST":
         form = request.form
         email = (form.get("email_address") or "").strip().lower()
@@ -133,7 +134,7 @@ def customer_register() -> object:
 
 
 @bp.get("/customer/logout")
-def customer_logout() -> object:
+def customer_logout() -> ResponseReturnValue:
     session.pop("email", None)
     return redirect(url_for("main.index"))
 
@@ -144,7 +145,7 @@ def customer_logout() -> object:
 
 
 @bp.route("/staff/login", methods=["GET", "POST"])
-def staff_login() -> object:
+def staff_login() -> ResponseReturnValue:
     if request.method == "POST":
         username = (request.form.get("username") or "").strip()
         password = request.form.get("password") or ""
@@ -173,7 +174,7 @@ def staff_login() -> object:
 
 
 @bp.route("/staff/register", methods=["GET", "POST"])
-def staff_register() -> object:
+def staff_register() -> ResponseReturnValue:
     if request.method == "POST":
         form = request.form
         username = (form.get("username") or "").strip()
@@ -262,6 +263,6 @@ def staff_register() -> object:
 
 
 @bp.get("/staff/logout")
-def staff_logout() -> object:
+def staff_logout() -> ResponseReturnValue:
     session.pop("username", None)
     return redirect(url_for("main.index"))

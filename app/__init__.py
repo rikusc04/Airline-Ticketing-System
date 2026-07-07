@@ -27,7 +27,7 @@ def create_app(config: Config | type[Config] | None = None) -> Flask:
         resolved = resolved()
     app.config.from_object(resolved)
 
-    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)  # type: ignore[method-assign]
 
     db.init_app(app)
     bcrypt.init_app(app)
@@ -87,19 +87,21 @@ def _register_error_handlers(app: Flask) -> None:
     from flask import render_template
 
     @app.errorhandler(404)
-    def not_found(_e):  # type: ignore[no-untyped-def]
+    def not_found(_e: Exception) -> tuple[str, int]:
         return render_template("errors/404.html"), 404
 
     @app.errorhandler(500)
-    def server_error(e):  # type: ignore[no-untyped-def]
+    def server_error(e: Exception) -> tuple[str, int]:
         app.logger.exception("unhandled exception: %s", e)
         db.session.rollback()
         return render_template("errors/500.html"), 500
 
 
 def _register_security_headers(app: Flask) -> None:
+    from flask import Response
+
     @app.after_request
-    def set_secure_headers(resp):  # type: ignore[no-untyped-def]
+    def set_secure_headers(resp: Response) -> Response:
         resp.headers.setdefault("X-Content-Type-Options", "nosniff")
         resp.headers.setdefault("X-Frame-Options", "DENY")
         resp.headers.setdefault("Referrer-Policy", "same-origin")

@@ -15,6 +15,7 @@ from flask import (
     session,
     url_for,
 )
+from flask.typing import ResponseReturnValue
 from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
 
@@ -49,7 +50,7 @@ def _current_context() -> tuple[str, str] | None:
 
 @bp.get("/dashboard")
 @staff_required
-def dashboard() -> object:
+def dashboard() -> ResponseReturnValue:
     ctx = _current_context()
     if not ctx:
         session.clear()
@@ -151,7 +152,7 @@ def dashboard() -> object:
 
 @bp.post("/add_flight")
 @staff_required
-def add_flight() -> object:
+def add_flight() -> ResponseReturnValue:
     ctx = _current_context()
     if not ctx:
         abort(403)
@@ -213,7 +214,7 @@ def add_flight() -> object:
 
 @bp.post("/change_flight_status")
 @staff_required
-def change_flight_status() -> object:
+def change_flight_status() -> ResponseReturnValue:
     ctx = _current_context()
     if not ctx:
         abort(403)
@@ -247,7 +248,7 @@ def change_flight_status() -> object:
 
 @bp.post("/add_airport")
 @staff_required
-def add_airport() -> object:
+def add_airport() -> ResponseReturnValue:
     form = request.form
     try:
         db.session.execute(
@@ -277,7 +278,7 @@ def add_airport() -> object:
 
 @bp.post("/add_airplane")
 @staff_required
-def add_airplane() -> object:
+def add_airplane() -> ResponseReturnValue:
     ctx = _current_context()
     if not ctx:
         abort(403)
@@ -315,7 +316,7 @@ def add_airplane() -> object:
 
 @bp.post("/schedule_maintenance")
 @staff_required
-def schedule_maintenance() -> object:
+def schedule_maintenance() -> ResponseReturnValue:
     ctx = _current_context()
     if not ctx:
         abort(403)
