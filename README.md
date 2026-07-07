@@ -1,15 +1,8 @@
 # Airline Ticketing System
 
-A Flask + MySQL web app for booking flights, managing airline flights, and
-leaving reviews. Customers can register, search flights, purchase tickets,
-cancel upcoming trips, review flights they've taken, and see their spending.
-Airline staff can create flights, change flight status, add airports and
-airplanes, and schedule maintenance.
+A Flask + MySQL web app for booking flights, managing airline flights, and leaving reviews. Customers can register, search flights, purchase tickets, cancel upcoming trips, review flights they've taken, and see their spending. Airline staff can create flights, change flight status, add airports and airplanes, and schedule maintenance.
 
-This was originally a classroom CRUD demo. It has since been rewritten for
-production readiness: bcrypt-hashed passwords, CSRF protection, secure
-sessions, pooled SQLAlchemy connections, parameterized queries, containerized
-deployment via Docker, and a pytest suite gated by GitHub Actions CI.
+Built with production practices: bcrypt-hashed passwords, CSRF protection, secure sessions, pooled SQLAlchemy connections, parameterized queries, containerized deployment via Docker, and a pytest suite gated by GitHub Actions CI.
 
 ## Table of contents
 
@@ -23,12 +16,7 @@ deployment via Docker, and a pytest suite gated by GitHub Actions CI.
 
 ## Quick start (Docker)
 
-**Use this if you just want to run the app** — to click around, demo it, or
-verify it works. Everything (Python, MySQL, gunicorn) runs inside containers,
-so there's no local Python or MySQL setup. Trade-off: changing Python code
-requires rebuilding the image (`docker compose up --build`), which is slow.
-If you're actively writing code, use [Local development](#local-development)
-instead.
+**Use this if you just want to run the app** — to click around, demo it, or verify it works. Everything (Python, MySQL, gunicorn) runs inside containers, so there's no local Python or MySQL setup. Trade-off: changing Python code requires rebuilding the image (`docker compose up --build`), which is slow. If you're actively writing code, use [Local development](#local-development) instead.
 
 Prereqs: Docker Desktop or Docker Engine + Compose plugin.
 
@@ -40,8 +28,7 @@ python -c "import secrets; print(secrets.token_urlsafe(64))"   # generate a SECR
 docker compose up --build -d
 ```
 
-The app is now at http://localhost:8000. The MySQL container will initialize
-the schema from `db/schema.sql` on first boot.
+The app is now at http://localhost:8000. The MySQL container will initialize the schema from `db/schema.sql` on first boot.
 
 ### Stopping and managing the stack
 
@@ -55,9 +42,7 @@ docker compose up -d          # start again (no rebuild — uses existing image)
 docker compose up --build -d  # rebuild the image, e.g. after changing Python code
 ```
 
-`docker compose down` stops the containers but Docker Desktop itself keeps
-running in the background (using some RAM). To fully quit it, click the whale
-icon in the macOS menu bar &rarr; **Quit Docker Desktop**.
+`docker compose down` stops the containers but Docker Desktop itself keeps running in the background (using some RAM). To fully quit it, click the whale icon in the macOS menu bar &rarr; **Quit Docker Desktop**.
 
 ## Local development
 
@@ -113,17 +98,14 @@ by `wsgi.py` (via `python-dotenv`).
 
 ## Testing
 
-Tests run against a real MySQL. Point `TEST_DATABASE_URL` at a database you're
-happy to have wiped.
+Tests run against a real MySQL. Point `TEST_DATABASE_URL` at a database you WANT to WIPE.
 
 ```bash
 export TEST_DATABASE_URL="mysql+pymysql://user:pw@127.0.0.1:3306/air_ticket_system_test?charset=utf8mb4"
 pytest
 ```
 
-CI (`.github/workflows/ci.yml`) runs `ruff check`, `ruff format --check`,
-`mypy`, and `pytest --cov` against a MySQL 8 service container on every push
-and PR.
+CI (`.github/workflows/ci.yml`) runs `ruff check`, `ruff format --check`, `mypy`, and `pytest --cov` against a MySQL 8 service container on every push and PR.
 
 ## Project layout
 
@@ -156,57 +138,33 @@ and PR.
 
 ## Security notes
 
-Changes made vs. the original school-project codebase:
-
-- **Passwords**: bcrypt (Flask-Bcrypt) with per-hash salt. The previous
-  `md5(password)` code and any stored plaintext/md5 hashes are gone.
-- **Session cookies**: `HttpOnly`, `SameSite=Lax`, `Secure` in production;
-  the Flask secret key is required from `SECRET_KEY` env.
-- **CSRF**: `Flask-WTF` `CSRFProtect` enabled globally; every POST form
-  includes `{{ csrf_token() }}`.
-- **SQL**: All queries use bound parameters via `SQLAlchemy text()`. No
-  string concatenation.
-- **User enumeration**: Login errors are a single "invalid email or password"
-  message and constant-time password verification (even on unknown users).
-- **Auth guards**: `customer_required` / `staff_required` decorators on every
-  authenticated route; ticket cancellation now requires ownership.
-- **Ticket ID generation**: `secrets.token_hex(8)` instead of
-  `COUNT(*) + 100` (which had a race and reused IDs after deletes).
-- **Payment data**: Only the last 4 digits of the card are stored in
-  `Purchase.card_last4`. For a real deployment, remove that column entirely
-  and integrate a payment processor (Stripe, Braintree). The current app
-  is **not** PCI-compliant — do not use it to accept real cards.
-- **Reviews**: Only allowed on flights the reviewer actually purchased and
-  that have already departed. Duplicate reviews upsert instead of failing.
-- **Headers**: `X-Content-Type-Options`, `X-Frame-Options`, a strict CSP,
-  and `Referrer-Policy` are set on every response.
-- **Reverse proxy**: `ProxyFix` trusts one hop so `X-Forwarded-*` headers
-  from an ingress work correctly.
-- **Secrets**: Nothing sensitive is committed. `.env` is git-ignored and only
-  `.env.example` (with placeholders) is checked in.
+- **Passwords**: bcrypt (Flask-Bcrypt) with per-hash salt. The previous `md5(password)` code and any stored plaintext/md5 hashes are gone.
+- **Session cookies**: `HttpOnly`, `SameSite=Lax`, `Secure` in production; the Flask secret key is required from `SECRET_KEY` env.
+- **CSRF**: `Flask-WTF` `CSRFProtect` enabled globally; every POST form includes `{{ csrf_token() }}`.
+- **SQL**: All queries use bound parameters via `SQLAlchemy text()`. No string concatenation.
+- **User enumeration**: Login errors are a single "invalid email or password" message and constant-time password verification (even on unknown users).
+- **Auth guards**: `customer_required` / `staff_required` decorators on every authenticated route; ticket cancellation now requires ownership.
+- **Ticket ID generation**: `secrets.token_hex(8)` instead of `COUNT(*) + 100` (which had a race and reused IDs after deletes).
+- **Payment data**: Only the last 4 digits of the card are stored in `Purchase.card_last4`. For a real deployment, remove that column entirely and integrate a payment processor (Stripe, Braintree). The current app is **not** PCI-compliant — do not use it to accept real cards.
+- **Reviews**: Only allowed on flights the reviewer actually purchased and that have already departed. Duplicate reviews upsert instead of failing.
+- **Headers**: `X-Content-Type-Options`, `X-Frame-Options`, a strict CSP, and `Referrer-Policy` are set on every response.
+- **Reverse proxy**: `ProxyFix` trusts one hop so `X-Forwarded-*` headers from an ingress work correctly.
+- **Secrets**: Nothing sensitive is committed. `.env` is git-ignored and only `.env.example` (with placeholders) is checked in.
 
 ## Production deployment
 
 The included `docker-compose.yml` is suitable for a single-host deployment.
 For anything larger:
 
-1. Terminate TLS at a reverse proxy (nginx / Caddy / cloud LB) in front of
-   `web:8000` — the app expects HTTPS and sets `SESSION_COOKIE_SECURE=True`.
-2. Run MySQL as a managed service (RDS, Cloud SQL, PlanetScale) rather than
-   the container. Point `DATABASE_URL` at it.
-3. Set a real `SECRET_KEY` in the platform's secret store (never commit
-   the value or bake it into an image).
-4. Scale horizontally by running more `web` containers behind the LB —
-   the app is stateless apart from the DB.
-5. Ship logs to a central aggregator; gunicorn writes access + error logs
-   to stdout.
-6. Do **not** enable the sample card storage in a real deployment; wire in
-   a payment processor and drop `Purchase.card_last4`.
+1. Terminate TLS at a reverse proxy (nginx / Caddy / cloud LB) in front of `web:8000` — the app expects HTTPS and sets `SESSION_COOKIE_SECURE=True`.
+2. Run MySQL as a managed service (RDS, Cloud SQL, PlanetScale) rather than the container. Point `DATABASE_URL` at it.
+3. Set a real `SECRET_KEY` in the platform's secret store (never commit the value or bake it into an image).
+4. Scale horizontally by running more `web` containers behind the LB — the app is stateless apart from the DB.
+5. Ship logs to a central aggregator; gunicorn writes access + error logs to stdout.
+6. Do **not** enable the sample card storage in a real deployment; wire in a payment processor and drop `Purchase.card_last4`.
 
-Health check endpoint: `GET /healthz` — returns `200 {"status": "ok"}` when
-the DB is reachable, `503` otherwise. The Docker healthcheck already uses it.
+Health check endpoint: `GET /healthz` — returns `200 {"status": "ok"}` when the DB is reachable, `503` otherwise. The Docker healthcheck already uses it.
 
 ## License
 
-MIT &mdash; see [LICENSE](LICENSE). Educational project; do not use it to
-accept real money or PII.
+MIT &mdash; see [LICENSE](LICENSE). Not intended to handle real payment data or PII in production; wire in a payment processor first.
