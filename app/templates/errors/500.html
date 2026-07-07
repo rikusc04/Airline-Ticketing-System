@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Server error &mdash; New Flight{% endblock %}
+{% block content %}
+<div class="landing">
+    <span class="hero-badge">500</span>
+    <h1>Something went wrong</h1>
+    <p class="lede">We're sorry &mdash; please try again in a moment.</p>
+    <div class="landing-actions">
+        <a href="{{ url_for('main.index') }}" class="btn">Back to home</a>
+    </div>
+</div>
+{% endblock %}

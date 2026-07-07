@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard &mdash; New Flight{% endblock %}
+{% block content %}
+
+<h1>Welcome back, {{ customer['first_name'] }} &#128075;</h1>
+
+<div class="stat-row">
+    <div class="stat">
+        <div class="stat-label">Upcoming flights</div>
+        <div class="stat-value">{{ future_flights|length if future_flights else 0 }}</div>
+    </div>
+    <div class="stat">
+        <div class="stat-label">Spent (last 12 months)</div>
+        <div class="stat-value">${{ spendings_past_year or '0.00' }}</div>
+    </div>
+    <div class="stat">
+        <div class="stat-label">Passport</div>
+        <div class="stat-value" style="font-size:1rem;">{{ customer['passport_country'] }}</div>
+    </div>
+</div>
+
+<div class="card">
+    <h2 style="margin-top:0;">My upcoming flights</h2>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Ticket ID</th>
+                    <th>Airline</th>
+                    <th>Flight</th>
+                    <th>Depart date</th>
+                    <th>Depart time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if future_flights %}
+                    {% for flight in future_flights %}
+                        <tr>
+                            <td>{{ flight['id_number'] }}</td>
+                            <td>{{ flight['airline_name'] }}</td>
+                            <td>{{ flight['flight_number'] }}</td>
+                            <td>{{ flight['depart_date'] }}</td>
+                            <td>{{ flight['depart_time'] }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan="5" class="empty-cell">No upcoming flights yet.</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <h2 style="margin-top:0;">Search for flights</h2>
+    {% if found_flight %}
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>Flight</th><th>Date</th><th>Time</th><th>From</th><th>Price</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ found_flight[0]['flight_number'] }}</td>
+                        <td>{{ found_flight[0]['depart_date'] }}</td>
+                        <td>{{ found_flight[0]['depart_time'] }}</td>
+                        <td>{{ found_flight[0]['depart_airport_code'] }}</td>
+                        <td>${{ found_flight[0]['base_price'] }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+    <form action="{{ url_for('customer.search_flights') }}" method="GET" class="form-grid cols-2">
+        <div class="field">
+            <label for="airline_name">Airline name</label>
+            <input type="text" id="airline_name" name="airline_name" required maxlength="20">
+        </div>
+        <div class="field">
+            <label for="flight_number">Flight number</label>
+            <input type="text" id="flight_number" name="flight_number" required maxlength="5">
+        </div>
+        <div class="field">
+            <label for="depart_date">Depart date</label>
+            <input type="date" id="depart_date" name="depart_date" required>
+        </div>
+        <div class="field">
+            <label for="depart_time">Depart time</label>
+            <input type="text" id="depart_time" name="depart_time" pattern="(?:[01]\d|2[0-3]):(?:[0-5]\d):(?:[0-5]\d)" placeholder="HH:MM:SS" required>
+        </div>
+        <input type="submit" value="Search flights" style="grid-column: span 2;">
+    </form>
+</div>
+
+<div class="card">
+    <h2 style="margin-top:0;">Purchase a ticket</h2>
+    <p class="section-lede">Only the last 4 digits of your card number are stored.</p>
+
+    <form action="{{ url_for('customer.purchase_ticket') }}" method="POST" class="form-grid">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <h3>Flight</h3>
+        <div class="form-grid cols-2">
+            <div class="field">
+                <label for="p_airline_name">Airline</label>
+                <input type="text" id="p_airline_name" name="airline_name" required maxlength="20">
+            </div>
+            <div class="field">
+                <label for="p_flight_number">Flight number</label>
+                <input type="text" id="p_flight_number" name="flight_number" required maxlength="5">
+            </div>
+            <div class="field">
+                <label for="p_depart_date">Depart date</label>
+                <input type="date" id="p_depart_date" name="depart_date" required>
+            </div>
+            <div class="field">
+                <label for="p_depart_time">Depart time</label>
+                <input type="text" id="p_depart_time" name="depart_time" pattern="(?:[01]\d|2[0-3]):(?:[0-5]\d):(?:[0-5]\d)" placeholder="HH:MM:SS" required>
+            </div>
+        </div>
+
+        <h3 class="mt-4">Passenger</h3>
+        <div class="form-grid cols-2">
+            <div class="field">
+                <label for="first_name">First name</label>
+                <input type="text" id="first_name" name="first_name" required maxlength="30">
+            </div>
+            <div class="field">
+                <label for="last_name">Last name</label>
+                <input type="text" id="last_name" name="last_name" required maxlength="30">
+            </div>
+            <div class="field">
+                <label for="date_of_birth">Date of birth</label>
+                <input type="date" id="date_of_birth" name="date_of_birth" required>
+            </div>
+        </div>
+
+        <h3 class="mt-4">Payment</h3>
+        <div class="form-grid cols-2">
+            <div class="field">
+                <label for="name_on_card">Name on card</label>
+                <input type="text" id="name_on_card" name="name_on_card" required maxlength="30">
+            </div>
+            <div class="field">
+                <label for="card_type">Card type</label>
+                <select id="card_type" name="card_type" required>
+                    <option value="credit">Credit</option>
+                    <option value="debit">Debit</option>
+                </select>
+            </div>
+            <div class="field">
+                <label for="card_number">Card number</label>
+                <input type="text" id="card_number" name="card_number" required maxlength="30" autocomplete="off" inputmode="numeric">
+            </div>
+            <div class="field">
+                <label for="expiration_date">Expiration date</label>
+                <input type="date" id="expiration_date" name="expiration_date" required>
+            </div>
+        </div>
+
+        <input type="submit" value="Purchase ticket" class="btn-block mt-4">
+    </form>
+</div>
+
+<div class="card">
+    <h2 style="margin-top:0;">Cancel a trip</h2>
+    <p class="section-lede">Enter a ticket ID from your upcoming flights above. Same-day and past-date tickets can't be cancelled.</p>
+    <form action="{{ url_for('customer.cancel_ticket') }}" method="POST" class="form-grid">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="field">
+            <label for="ticket_id">Ticket ID</label>
+            <input type="text" id="ticket_id" name="ticket_id" required>
+        </div>
+        <input type="submit" value="Cancel ticket" class="btn-danger">
+    </form>
+</div>
+
+<div class="card">
+    <h2 style="margin-top:0;">Spending by date range</h2>
+    <form action="{{ url_for('customer.spending_range') }}" method="GET" class="form-grid cols-2">
+        <div class="field">
+            <label for="start_date">Start date</label>
+            <input type="date" id="start_date" name="start_date" required>
+        </div>
+        <div class="field">
+            <label for="end_date">End date</label>
+            <input type="date" id="end_date" name="end_date" required>
+        </div>
+        <input type="submit" value="View spending" style="grid-column: span 2;">
+    </form>
+    {% if range_spending is defined and range_spending is not none %}
+        <p class="mt-4">
+            From <strong>{{ start_date }}</strong> to <strong>{{ end_date }}</strong>,
+            you spent <strong>${{ range_spending }}</strong>.
+        </p>
+    {% endif %}
+</div>
+
+<div class="text-center mt-6">
+    <a href="{{ url_for('customer.rating') }}" class="btn btn-secondary">&#11088; Rate a flight you've taken</a>
+</div>
+
+{% endblock %}

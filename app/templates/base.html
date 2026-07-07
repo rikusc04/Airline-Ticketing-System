@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}New Flight{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/app.css') }}">
+</head>
+<body>
+    <header class="site-header">
+        <a href="{{ url_for('main.index') }}" class="brand">&#9992; New Flight</a>
+        <nav>
+            {% if session.get('email') %}
+                <a href="{{ url_for('customer.dashboard') }}" class="btn btn-secondary">Dashboard</a>
+                <a href="{{ url_for('auth.customer_logout') }}" class="btn btn-secondary">Log out</a>
+            {% elif session.get('username') %}
+                <a href="{{ url_for('staff.dashboard') }}" class="btn btn-secondary">Dashboard</a>
+                <a href="{{ url_for('auth.staff_logout') }}" class="btn btn-secondary">Log out</a>
+            {% else %}
+                <a href="{{ url_for('auth.customer_login') }}" class="btn btn-secondary">Customer login</a>
+                <a href="{{ url_for('auth.staff_login') }}" class="btn btn-secondary">Staff login</a>
+            {% endif %}
+        </nav>
+    </header>
+    <main class="{% block container_class %}container{% endblock %}">
+        {% include '_flashes.html' %}
+        {% block content %}{% endblock %}
+    </main>
+    <footer class="site-footer">
+        &copy; New Flight. All rights reserved.
+    </footer>
+</body>
+</html>

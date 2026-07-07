@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}New Flight &mdash; Book your next trip{% endblock %}
+{% block content %}
+<section class="landing">
+    <span class="hero-badge">Welcome aboard</span>
+    <h1>Book flights the modern way.</h1>
+    <p class="lede">
+        Search flights, purchase tickets, track your spending, and rate the flights
+        you've taken &mdash; all in one place. Airline staff can manage their
+        fleet's flights, airports, and maintenance schedules.
+    </p>
+    <p class="text-muted mt-2">Already have an account? Use the login button in the top right.</p>
+
+    <div class="role-grid">
+        <div class="role-card">
+            <h3>&#128188; I'm a customer</h3>
+            <p>Register, search flights, buy tickets, cancel upcoming trips, review flights you've taken, and view your spending history.</p>
+            <a href="{{ url_for('auth.customer_register') }}" class="btn btn-block">Register as a customer</a>
+        </div>
+        <div class="role-card">
+            <h3>&#128737;&#65039; I'm airline staff</h3>
+            <p>Register, create flights, update flight status, add aircraft and airports, and schedule maintenance for your fleet.</p>
+            <a href="{{ url_for('auth.staff_register') }}" class="btn btn-block">Register as staff</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

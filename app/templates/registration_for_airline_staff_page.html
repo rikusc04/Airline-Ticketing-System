@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}Staff registration &mdash; New Flight{% endblock %}
+{% block content %}
+<div class="card">
+    <h1>Airline staff registration</h1>
+    <p class="section-lede">Register a staff account. The airline you specify must already exist in the system.</p>
+
+    <form action="{{ url_for('auth.staff_register') }}" method="POST" class="form-grid">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <div class="form-grid cols-2">
+            <div class="field">
+                <label for="airline_name">Airline</label>
+                <input type="text" id="airline_name" name="airline_name" required maxlength="20" placeholder="e.g. Delta">
+            </div>
+            <div class="field">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required maxlength="20" autocomplete="username">
+            </div>
+
+            <div class="field">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required minlength="12" maxlength="128" autocomplete="new-password">
+                <span class="hint">Minimum 12 characters, at least one letter and one digit.</span>
+            </div>
+            <div class="field">
+                <label for="date_of_birth">Date of birth</label>
+                <input type="date" id="date_of_birth" name="date_of_birth" required>
+            </div>
+
+            <div class="field">
+                <label for="first_name">First name</label>
+                <input type="text" id="first_name" name="first_name" required maxlength="15">
+            </div>
+            <div class="field">
+                <label for="last_name">Last name</label>
+                <input type="text" id="last_name" name="last_name" required maxlength="15">
+            </div>
+
+            <div class="field">
+                <label for="email_address">Email address</label>
+                <input type="email" id="email_address" name="email_address" maxlength="60">
+            </div>
+            <div class="field">
+                <label for="phone_number">Phone number</label>
+                <input type="tel" id="phone_number" name="phone_number" maxlength="15">
+            </div>
+        </div>
+
+        <input type="submit" value="Create staff account" class="btn-block mt-4">
+    </form>
+</div>
+{% endblock %}

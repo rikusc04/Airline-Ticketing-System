@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Customer login &mdash; New Flight{% endblock %}
+{% block container_class %}container-narrow{% endblock %}
+{% block content %}
+<div class="auth-card">
+    <h1>Welcome back</h1>
+    <p class="subtitle">Sign in to your customer account.</p>
+
+    <form action="{{ url_for('auth.customer_login') }}" method="POST" class="form-grid">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="field">
+            <label for="email_address">Email address</label>
+            <input type="email" id="email_address" name="email_address" required autocomplete="email">
+        </div>
+        <div class="field">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required autocomplete="current-password">
+        </div>
+        <input type="submit" value="Sign in" class="btn-block">
+    </form>
+
+    <p class="auth-alt">
+        No account? <a href="{{ url_for('auth.customer_register') }}">Create one</a>.
+    </p>
+</div>
+{% endblock %}

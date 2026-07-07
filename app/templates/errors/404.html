@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Not found &mdash; New Flight{% endblock %}
+{% block content %}
+<div class="landing">
+    <span class="hero-badge">404</span>
+    <h1>Page not found</h1>
+    <p class="lede">The page you're looking for doesn't exist.</p>
+    <div class="landing-actions">
+        <a href="{{ url_for('main.index') }}" class="btn">Back to home</a>
+    </div>
+</div>
+{% endblock %}

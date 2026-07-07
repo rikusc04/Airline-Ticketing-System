@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Staff login &mdash; New Flight{% endblock %}
+{% block container_class %}container-narrow{% endblock %}
+{% block content %}
+<div class="auth-card">
+    <h1>Staff login</h1>
+    <p class="subtitle">Sign in to your airline-staff account.</p>
+
+    <form action="{{ url_for('auth.staff_login') }}" method="POST" class="form-grid">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="field">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required autocomplete="username">
+        </div>
+        <div class="field">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required autocomplete="current-password">
+        </div>
+        <input type="submit" value="Sign in" class="btn-block">
+    </form>
+
+    <p class="auth-alt">
+        No account? <a href="{{ url_for('auth.staff_register') }}">Register</a>.
+    </p>
+</div>
+{% endblock %}

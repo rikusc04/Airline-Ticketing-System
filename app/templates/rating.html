@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Rate a flight &mdash; New Flight{% endblock %}
+{% block container_class %}container-narrow{% endblock %}
+{% block content %}
+<div class="card">
+    <h1>Rate a flight</h1>
+    <p class="section-lede">You can only review flights you've taken.</p>
+
+    <form action="{{ url_for('customer.submit_rating') }}" method="POST" class="form-grid">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <div class="field">
+            <label for="airline_name">Airline name</label>
+            <input type="text" id="airline_name" name="airline_name" required maxlength="20">
+        </div>
+        <div class="field">
+            <label for="flight_number">Flight number</label>
+            <input type="text" id="flight_number" name="flight_number" required maxlength="5">
+        </div>
+        <div class="form-grid cols-2">
+            <div class="field">
+                <label for="depart_date">Depart date</label>
+                <input type="date" id="depart_date" name="depart_date" required>
+            </div>
+            <div class="field">
+                <label for="depart_time">Depart time</label>
+                <input type="text" id="depart_time" name="depart_time" pattern="(?:[01]\d|2[0-3]):(?:[0-5]\d):(?:[0-5]\d)" placeholder="HH:MM:SS" required>
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="rating">Rating: <output for="rating">5</output> / 10</label>
+            <input type="range" id="rating" name="rating" min="0" max="10" step="0.5" value="5" required
+                   oninput="this.previousElementSibling.querySelector('output').value = this.value">
+        </div>
+
+        <div class="field">
+            <label for="comments">Comments</label>
+            <textarea id="comments" name="comments" rows="4" placeholder="Tell us how it went..."></textarea>
+        </div>
+
+        <input type="submit" value="Submit review" class="btn-block">
+    </form>
+
+    <p class="auth-alt">
+        <a href="{{ url_for('customer.dashboard') }}">&larr; Back to dashboard</a>
+    </p>
+</div>
+{% endblock %}

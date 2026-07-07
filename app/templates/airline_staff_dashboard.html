@@ -1,0 +1,261 @@
+{% extends 'base.html' %}
+{% block title %}Staff dashboard &mdash; New Flight{% endblock %}
+{% block content %}
+
+<h1>{{ staff['first_name'] }} &middot; <span class="pill">{{ airline_name }}</span></h1>
+<p class="section-lede">Manage your airline's flights, aircraft, airports, and maintenance.</p>
+
+<div class="card">
+    <h2 style="margin-top:0;">Upcoming flights</h2>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr><th>Flight</th><th>Date</th><th>Time</th><th>From</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+                {% if future_flights %}
+                    {% for elem in future_flights %}
+                        <tr>
+                            <td>{{ elem['flight_number'] }}</td>
+                            <td>{{ elem['depart_date'] }}</td>
+                            <td>{{ elem['depart_time'] }}</td>
+                            <td>{{ elem['depart_airport_code'] }}</td>
+                            <td>
+                                {% set s = elem['status']|lower %}
+                                {% if s == 'on time' or s == 'ontime' %}
+                                    <span class="pill pill-success">{{ elem['status'] }}</span>
+                                {% elif s == 'delayed' %}
+                                    <span class="pill pill-warn">{{ elem['status'] }}</span>
+                                {% elif s == 'cancelled' %}
+                                    <span class="pill pill-danger">{{ elem['status'] }}</span>
+                                {% else %}
+                                    <span class="pill">{{ elem['status'] }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan="5" class="empty-cell">No upcoming flights.</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <h2 style="margin-top:0;">Create a flight</h2>
+    <form action="{{ url_for('staff.add_flight') }}" method="POST" class="form-grid">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="form-grid cols-2">
+            <div class="field">
+                <label for="flight_number">Flight number</label>
+                <input type="text" id="flight_number" name="flight_number" required maxlength="5">
+            </div>
+            <div class="field">
+                <label for="status">Status</label>
+                <select id="status" name="status">
+                    <option value="On time">On time</option>
+                    <option value="delayed">Delayed</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+            </div>
+            <div class="field">
+                <label for="depart_date">Depart date</label>
+                <input type="date" id="depart_date" name="depart_date" required>
+            </div>
+            <div class="field">
+                <label for="depart_time">Depart time</label>
+                <input type="text" id="depart_time" name="depart_time" pattern="(?:[01]\d|2[0-3]):(?:[0-5]\d):(?:[0-5]\d)" placeholder="HH:MM:SS" required>
+            </div>
+            <div class="field">
+                <label for="arrival_date">Arrival date</label>
+                <input type="date" id="arrival_date" name="arrival_date" required>
+            </div>
+            <div class="field">
+                <label for="arrival_time">Arrival time</label>
+                <input type="text" id="arrival_time" name="arrival_time" pattern="(?:[01]\d|2[0-3]):(?:[0-5]\d):(?:[0-5]\d)" placeholder="HH:MM:SS" required>
+            </div>
+            <div class="field">
+                <label for="depart_airport_code">Depart airport</label>
+                <input type="text" id="depart_airport_code" name="depart_airport_code" required maxlength="10" placeholder="JFK">
+            </div>
+            <div class="field">
+                <label for="arrival_airport_code">Arrival airport</label>
+                <input type="text" id="arrival_airport_code" name="arrival_airport_code" required maxlength="10" placeholder="HND">
+            </div>
+            <div class="field">
+                <label for="base_price">Base price ($)</label>
+                <input type="number" step="0.01" min="0" id="base_price" name="base_price" required>
+            </div>
+            <div class="field">
+                <label for="airplane_id">Airplane ID (optional)</label>
+                <input type="text" id="airplane_id" name="airplane_id" maxlength="20">
+            </div>
+        </div>
+        <input type="submit" value="Create flight" class="btn-block mt-4">
+    </form>
+</div>
+
+<div class="card">
+    <h2 style="margin-top:0;">Change flight status</h2>
+    <form action="{{ url_for('staff.change_flight_status') }}" method="POST" class="form-grid cols-2">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="field">
+            <label for="cf_flight_number">Flight number</label>
+            <input type="text" id="cf_flight_number" name="flight_number" required>
+        </div>
+        <div class="field">
+            <label for="cf_status">New status</label>
+            <select id="cf_status" name="status" required>
+                <option value="On time">On time</option>
+                <option value="delayed">Delayed</option>
+                <option value="cancelled">Cancelled</option>
+            </select>
+        </div>
+        <div class="field">
+            <label for="cf_depart_date">Depart date</label>
+            <input type="date" id="cf_depart_date" name="depart_date" required>
+        </div>
+        <div class="field">
+            <label for="cf_depart_time">Depart time</label>
+            <input type="text" id="cf_depart_time" name="depart_time" pattern="(?:[01]\d|2[0-3]):(?:[0-5]\d):(?:[0-5]\d)" placeholder="HH:MM:SS" required>
+        </div>
+        <input type="submit" value="Update status" style="grid-column: span 2;">
+    </form>
+</div>
+
+<div class="card">
+    <h2 style="margin-top:0;">Add airplane</h2>
+    <form action="{{ url_for('staff.add_airplane') }}" method="POST" class="form-grid cols-2">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="field">
+            <label for="id_number">Airplane ID</label>
+            <input type="text" id="id_number" name="id_number" required maxlength="20">
+        </div>
+        <div class="field">
+            <label for="num_of_seats">Number of seats</label>
+            <input type="number" min="1" id="num_of_seats" name="num_of_seats" required>
+        </div>
+        <div class="field">
+            <label for="manufacturing_company">Manufacturer</label>
+            <input type="text" id="manufacturing_company" name="manufacturing_company" required maxlength="20">
+        </div>
+        <div class="field">
+            <label for="model_number">Model</label>
+            <input type="text" id="model_number" name="model_number" required maxlength="20">
+        </div>
+        <div class="field">
+            <label for="manufacturing_date">Manufacturing date</label>
+            <input type="date" id="manufacturing_date" name="manufacturing_date" required>
+        </div>
+        <div class="field">
+            <label for="age">Age (years)</label>
+            <input type="number" min="0" id="age" name="age" required>
+        </div>
+        <input type="submit" value="Add airplane" style="grid-column: span 2;">
+    </form>
+</div>
+
+<div class="card">
+    <h2 style="margin-top:0;">Add airport</h2>
+    <form action="{{ url_for('staff.add_airport') }}" method="POST" class="form-grid cols-2">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="field">
+            <label for="code">Airport code</label>
+            <input type="text" id="code" name="code" required maxlength="10" placeholder="JFK">
+        </div>
+        <div class="field">
+            <label for="name">Airport name</label>
+            <input type="text" id="name" name="name" required maxlength="50">
+        </div>
+        <div class="field">
+            <label for="city">City</label>
+            <input type="text" id="city" name="city" required maxlength="20">
+        </div>
+        <div class="field">
+            <label for="country">Country</label>
+            <input type="text" id="country" name="country" required maxlength="20">
+        </div>
+        <div class="field">
+            <label for="number_of_terminals">Terminals</label>
+            <input type="number" min="1" id="number_of_terminals" name="number_of_terminals" required>
+        </div>
+        <div class="field">
+            <label for="type">Type</label>
+            <select id="type" name="type" required>
+                <option value="Domestic">Domestic</option>
+                <option value="International">International</option>
+                <option value="Both">Both</option>
+            </select>
+        </div>
+        <input type="submit" value="Add airport" style="grid-column: span 2;">
+    </form>
+</div>
+
+<div class="card">
+    <h2 style="margin-top:0;">Schedule airplane maintenance</h2>
+    <form action="{{ url_for('staff.schedule_maintenance') }}" method="POST" class="form-grid cols-2">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="field">
+            <label for="m_airplane_id">Airplane ID</label>
+            <input type="text" id="m_airplane_id" name="airplane_id" required>
+        </div>
+        <div class="field">
+            <label for="maintenance_id">Maintenance ID</label>
+            <input type="text" id="maintenance_id" name="maintenance_id" required>
+        </div>
+        <div class="field">
+            <label for="start_date">Start date</label>
+            <input type="date" id="start_date" name="start_date" required>
+        </div>
+        <div class="field">
+            <label for="start_time">Start time</label>
+            <input type="text" id="start_time" name="start_time" pattern="(?:[01]\d|2[0-3]):(?:[0-5]\d):(?:[0-5]\d)" placeholder="HH:MM:SS" required>
+        </div>
+        <div class="field">
+            <label for="end_date">End date</label>
+            <input type="date" id="end_date" name="end_date" required>
+        </div>
+        <div class="field">
+            <label for="end_time">End time</label>
+            <input type="text" id="end_time" name="end_time" pattern="(?:[01]\d|2[0-3]):(?:[0-5]\d):(?:[0-5]\d)" placeholder="HH:MM:SS" required>
+        </div>
+        <input type="submit" value="Schedule maintenance" style="grid-column: span 2;">
+    </form>
+</div>
+
+<div class="card">
+    <h2 style="margin-top:0;">Reviews and ratings</h2>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr><th>Flight</th><th>Date</th><th>Time</th><th>Rating</th><th>Comment</th></tr>
+            </thead>
+            <tbody>
+                {% if reviews %}
+                    {% for r in reviews %}
+                        <tr>
+                            <td>{{ r['flight_number'] }}</td>
+                            <td>{{ r['depart_date'] }}</td>
+                            <td>{{ r['depart_time'] }}</td>
+                            <td><strong>{{ r['rating'] }}</strong>&nbsp;/&nbsp;10</td>
+                            <td>{{ r['comment'] }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan="5" class="empty-cell">No reviews yet for your airline.</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% if customer_info %}
+    <div class="card">
+        <h2 style="margin-top:0;">Most frequent customer (last 12 months)</h2>
+        <p><strong>{{ customer_info['first_name'] }} {{ customer_info['last_name'] }}</strong> &mdash; {{ customer_info['email_address'] }}</p>
+        <p class="text-muted">Tickets purchased: {{ ticket_count }}</p>
+    </div>
+{% endif %}
+
+{% endblock %}
