@@ -48,7 +48,7 @@ docker compose up --build -d  # rebuild the image, e.g. after changing Python co
 
 **Use this if you're editing the code.** The Flask app runs directly on your machine via `flask --debug`, so saving a `.py` file hot-reloads the server and you can set breakpoints in your editor. MySQL still runs in a container (easier than installing MySQL locally). Fast feedback loop; requires a Python venv and `pip install`.
 
-Prereqs: Python 3.11+, a local or Docker MySQL 8.
+Prereqs: Python 3.11, a local or Docker MySQL 8.
 
 ```bash
 python -m venv .venv
@@ -138,7 +138,7 @@ CI (`.github/workflows/ci.yml`) runs `ruff check`, `ruff format --check`, `mypy`
 
 ## Security notes
 
-- **Passwords**: bcrypt (Flask-Bcrypt) with per-hash salt. The previous `md5(password)` code and any stored plaintext/md5 hashes are gone.
+- **Passwords**: bcrypt (Flask-Bcrypt) with per-hash salt.
 - **Session cookies**: `HttpOnly`, `SameSite=Lax`, `Secure` in production; the Flask secret key is required from `SECRET_KEY` env.
 - **CSRF**: `Flask-WTF` `CSRFProtect` enabled globally; every POST form includes `{{ csrf_token() }}`.
 - **SQL**: All queries use bound parameters via `SQLAlchemy text()`. No string concatenation.
